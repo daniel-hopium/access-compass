@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<script>try{const t=JSON.parse(localStorage.getItem('rechte-kompass:theme'));if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}
+try{if(JSON.parse(localStorage.getItem('rechte-kompass:width'))==='wide')document.documentElement.setAttribute('data-width','wide')}catch(e){}
+try{const w=JSON.parse(localStorage.getItem('rechte-kompass:lessonW'));if(w>0)document.documentElement.style.setProperty('--lesson-w',w+'px')}catch(e){}</script>
 <title>Rechte-Kompass</title>
 <meta name="description" content="Authentifizierung und Autorisierung zum Anfassen: Sessions, JWT, OAuth 2.0, OpenID Connect, RBAC, ABAC, PBAC und ReBAC – mit Simulatoren und Beispielen in Angular 22 und Spring Security.">
 <link rel="icon" href="favicon.ico" sizes="32x32">
@@ -116,6 +119,23 @@ kbd{font-family:var(--font-mono);font-size:.8rem;border:1px solid var(--line-str
 .btn-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .icon-btn{width:44px;height:44px;display:inline-grid;place-items:center;border-radius:var(--radius-ctl);background:transparent;border:0;color:var(--ink);cursor:pointer;flex:none}
 .icon-btn:hover{background:var(--surface-2)}
+.theme-btn .ic-sun,.theme-btn[aria-pressed="true"] .ic-moon{display:none}
+.theme-btn[aria-pressed="true"] .ic-sun{display:block}
+.width-btn .ic-narrow,.width-btn[aria-pressed="true"] .ic-wide{display:none}
+.width-btn[aria-pressed="true"] .ic-narrow{display:block}
+/* Unter 1280px ist „breit“ kaum breiter als normal – dann braucht es den Knopf nicht */
+@media (max-width:1279px){.width-btn{display:none}}
+/* Breite Ansicht: die Lektion nutzt die ganze Spalte statt 48rem */
+:root[data-width="wide"] .lesson{position:relative;max-width:var(--lesson-w,none);padding-left:clamp(16px,3vw,56px);padding-right:clamp(16px,3vw,56px)}
+/* Zieh-Griff am rechten Rand der Lektion – nur in der breiten Ansicht */
+.lesson-grip{display:none}
+:root[data-width="wide"] .lesson-grip{display:block;position:absolute;top:0;bottom:0;right:0;width:14px;cursor:ew-resize;touch-action:none}
+.lesson-grip::before{content:"";position:absolute;top:0;bottom:0;left:6px;width:2px;background:var(--line);transition:background-color .15s}
+.lesson-grip span{position:sticky;top:calc(50% - 24px);display:block;width:8px;height:48px;margin-left:3px;border-radius:4px;background:var(--line-strong);transition:background-color .15s}
+.lesson-grip:hover::before,.lesson-grip:focus-visible::before,.lesson-grip.is-dragging::before,.lesson-grip:hover span,.lesson-grip:focus-visible span,.lesson-grip.is-dragging span{background:var(--brand)}
+.lesson-grip:focus-visible{outline-offset:0}
+:root.is-resizing,:root.is-resizing *{cursor:ew-resize!important;user-select:none}
+@media (max-width:1279px){:root[data-width="wide"] .lesson-grip{display:none}}
 .spinner{width:18px;height:18px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .8s linear infinite;display:none;flex:none}
 .is-loading .spinner{display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -451,6 +471,8 @@ textarea.input{min-height:7em;padding:10px 12px;font:400 .8125rem/1.5 var(--font
       <label for="who"><span class="who-long" data-en="Signed in as">Angemeldet als</span><span class="sr-only" data-en=" (changes all examples)"> (ändert alle Beispiele)</span></label>
       <select id="who"></select>
     </div>
+    <button type="button" class="icon-btn width-btn" id="width-btn" aria-pressed="false" aria-label="Breite Ansicht" data-en-label="Wide view"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="ic ic-wide"><path d="M3 5v14M21 5v14M7 12h10M10 9l-3 3 3 3M14 9l3 3-3 3"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="ic ic-narrow"><path d="M3 5v14M21 5v14M4 12h5M20 12h-5M6 9l3 3-3 3M18 9l-3 3 3 3"/></svg></button>
+    <button type="button" class="icon-btn theme-btn" id="theme-btn" aria-pressed="false" aria-label="Dunkles Design" data-en-label="Dark theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="ic ic-moon"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="ic ic-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
     <a class="lang-link" id="lang-link" href="?lang=en" hreflang="en" lang="en">English</a>
   </header>
 
@@ -511,6 +533,65 @@ if(LANG==='en')$$('[data-en],[data-en-label]').forEach(el=>{
   if(el.dataset.en)el.textContent=el.dataset.en;
   if(el.dataset.enLabel)el.setAttribute('aria-label',el.dataset.enLabel);
 });
+/* Hell/Dunkel-Umschalter: Klick legt das Design fest und merkt es sich, sonst gilt die Systemeinstellung */
+(()=>{
+  const btn=$('#theme-btn'),mq=matchMedia('(prefers-color-scheme: dark)');
+  const isDark=()=>{const t=document.documentElement.getAttribute('data-theme');return t?t==='dark':mq.matches};
+  const sync=()=>btn.setAttribute('aria-pressed',String(isDark()));
+  btn.addEventListener('click',()=>{const m=isDark()?'light':'dark';document.documentElement.setAttribute('data-theme',m);store.set('theme',m);window.dispatchEvent(new Event('themechange'));sync()});
+  mq.addEventListener('change',sync);window.addEventListener('themechange',sync);sync();
+})();
+/* Breite-Umschalter: Lektion normal (48rem) oder über die ganze Spalte, wird gemerkt */
+(()=>{
+  const btn=$('#width-btn'),root=document.documentElement;
+  const sync=()=>btn.setAttribute('aria-pressed',String(root.getAttribute('data-width')==='wide'));
+  btn.addEventListener('click',()=>{
+    const wide=root.getAttribute('data-width')!=='wide';
+    if(wide)root.setAttribute('data-width','wide');else root.removeAttribute('data-width');
+    store.set('width',wide?'wide':'normal');sync();
+  });
+  sync();
+})();
+/* Breite ziehen: Griff am rechten Rand der Lektion, nur in der breiten Ansicht. Die Lektion ist
+   zentriert, darum wächst sie beim Ziehen nach beiden Seiten – Breite = 2 × Abstand zur Mitte. */
+(()=>{
+  const root=document.documentElement,view=$('#view');
+  const lesson=()=>$('.lesson',view);
+  const min=()=>parseFloat(getComputedStyle(root).fontSize)*48;
+  const max=()=>view.clientWidth;
+  const clamp=w=>Math.min(max(),Math.max(min(),w));
+  const set=w=>{if(w==null)root.style.removeProperty('--lesson-w');else root.style.setProperty('--lesson-w',Math.round(w)+'px')};
+  const aria=()=>{const g=$('.lesson-grip',view),L=lesson();if(!g||!L)return;
+    g.setAttribute('aria-valuemin',Math.round(min()));g.setAttribute('aria-valuemax',Math.round(max()));g.setAttribute('aria-valuenow',Math.round(L.getBoundingClientRect().width))};
+  // An den Rand gezogen heißt „ganze Breite“ – dann wächst die Lektion auch mit dem Fenster mit
+  const commit=w=>{const full=w>=max()-1;set(full?null:w);store.set('lessonW',full?null:Math.round(w));aria()};
+  function attach(){
+    const L=lesson();if(!L||$('.lesson-grip',L))return;
+    const g=document.createElement('div');
+    g.className='lesson-grip';g.tabIndex=0;g.setAttribute('role','separator');g.setAttribute('aria-orientation','vertical');
+    g.setAttribute('aria-label',tx('Breite der Lektion','Lesson width'));
+    g.title=tx('Ziehen ändert die Breite · Doppelklick: ganze Breite','Drag to resize · double-click: full width');
+    g.innerHTML='<span></span>';L.append(g);aria();
+  }
+  view.addEventListener('pointerdown',e=>{
+    const g=e.target.closest('.lesson-grip');if(!g||e.button!==0)return;
+    e.preventDefault();
+    const r=lesson().getBoundingClientRect(),cx=r.left+r.width/2;
+    g.setPointerCapture(e.pointerId);g.classList.add('is-dragging');root.classList.add('is-resizing');
+    const move=ev=>set(clamp(2*(ev.clientX-cx)));
+    const up=()=>{g.removeEventListener('pointermove',move);g.classList.remove('is-dragging');root.classList.remove('is-resizing');commit(lesson().getBoundingClientRect().width)};
+    g.addEventListener('pointermove',move);g.addEventListener('lostpointercapture',up,{once:true});
+  });
+  view.addEventListener('dblclick',e=>{if(e.target.closest('.lesson-grip'))commit(max())});
+  view.addEventListener('keydown',e=>{
+    if(!e.target.classList.contains('lesson-grip'))return;
+    const w=lesson().getBoundingClientRect().width,step=e.shiftKey?160:40;
+    const next={ArrowLeft:w-step,ArrowRight:w+step,Home:min(),End:max()}[e.key];
+    if(next!=null){e.preventDefault();e.stopPropagation();commit(clamp(next))}
+  });
+  view.addEventListener('focusin',e=>{if(e.target.classList.contains('lesson-grip'))aria()});
+  new MutationObserver(attach).observe(view,{childList:true});attach();
+})();
 const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isNarrow=()=>matchMedia('(max-width: 799px)').matches;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

@@ -48,7 +48,9 @@ Richtig/Falsch, „Warum?“ und Links zur Quelle. Dazu ein Glossar unter `#glos
 - **Sprache:** „English“ / „Deutsch“ oben rechts; steht als `?lang=en` in der Adresse.
 - Jede Lektion hat eine eigene Adresse (`#jwt`), der Zurück-Button funktioniert.
 - Lektionen lassen sich als gelernt markieren; der Stand bleibt im Browser.
-- Hell/dunkel folgt dem System, die breite Ansicht nutzt große Bildschirme aus.
+- Hell/dunkel folgt dem System, der Knopf mit Sonne/Mond legt es fest.
+- Der Breite-Knopf daneben lässt die Lektion die ganze Spalte füllen; am Griff rechts lässt
+  sich jede Breite dazwischen ziehen.
 
 ## Aufbau
 

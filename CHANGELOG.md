@@ -12,6 +12,13 @@ Kategorien: **Neu** (neue Funktionen), **Verbessert** (bestehendes Verhalten), *
 ## Unveröffentlicht
 
 ### Neu
+- Hell/Dunkel-Umschalter im Kopf: Klick legt das Design fest und merkt es sich, ohne Klick
+  gilt weiter die Systemeinstellung.
+- Breite-Umschalter neben Sonne/Mond: Die breite Ansicht lässt die Lektion die ganze Spalte
+  neben der Liste füllen statt 48rem; unter 1280px ist der Knopf ausgeblendet.
+- In der breiten Ansicht lässt sich die Lektion am Griff rechts schmaler oder breiter ziehen
+  (mindestens 48rem). Doppelklick stellt die ganze Breite her, per Tastatur gehen ←/→, Pos1
+  und Ende. Die gezogene Breite wird gemerkt.
 - Erste Fassung: 53 Lektionen in sieben Kapiteln zu Login und Rechten – Grundlagen,
   OAuth 2.0 & OpenID Connect, Autorisierung denken, Zugriffsmodelle (RBAC, ABAC, PBAC,
   ReBAC), Angular 22, Spring Boot & Spring Security, Ende zu Ende & Angriffe.
