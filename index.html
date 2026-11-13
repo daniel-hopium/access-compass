@@ -204,7 +204,7 @@ select{padding-right:10px;cursor:pointer}
 .lesson{max-width:48rem;margin:0 auto;padding:28px 28px 96px;container-type:inline-size}
 @media (max-width:599px){.lesson{padding:16px 16px 96px}}
 .eyebrow{font-size:.8125rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 8px}
-.lesson h1{font:var(--display-wt) clamp(1.75rem,1.3rem + 1.8vw,2.375rem)/1.12 var(--font-display);letter-spacing:-.015em;margin:0 0 14px;text-wrap:balance}
+.lesson h1{font:var(--display-wt) clamp(1.75rem,1.3rem + 1.8vw,2.375rem)/1.12 var(--font-display);letter-spacing:-.015em;margin:0 0 14px;text-wrap:balance;overflow-wrap:break-word;hyphens:auto}
 .lesson h2{font:700 1.25rem/1.3 var(--font-display);margin:40px 0 12px;text-wrap:balance}
 .refs{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;position:relative}
 .refs li{font:600 .75rem/1.2 var(--font-mono);padding:5px 9px;border:1px solid var(--line-strong);border-radius:var(--radius-sm);color:var(--muted);background:var(--surface)}
@@ -218,7 +218,7 @@ select{padding-right:10px;cursor:pointer}
 .demo-head{display:flex;justify-content:space-between;align-items:baseline;gap:4px 12px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--surface-2);border-radius:var(--radius-lg) var(--radius-lg) 0 0}
 .lesson .demo-head h2{margin:0;font:700 .8125rem/1.3 var(--font-body);letter-spacing:.09em;text-transform:uppercase}
 .demo-head span{font-size:.875rem;color:var(--muted)}
-.demo-body{padding:20px 18px 22px;display:grid;gap:28px;min-width:0}
+.demo-body{padding:20px 18px 22px;display:grid;grid-template-columns:minmax(0,1fr);gap:28px;min-width:0}
 .demo-body h3{font:700 1rem/1.3 var(--font-body);margin:0 0 10px}
 .demo-note{font-size:.875rem;color:var(--muted);margin:10px 0 0;line-height:1.45}
 .dodont{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;margin-top:40px;position:relative}
@@ -345,10 +345,15 @@ a.logo:hover{background:var(--surface-2)}
 .compare-table th[scope="row"]{white-space:nowrap}
 .compare-table td,.compare-table th{min-width:9rem}
 /* Diagramm: Kette aus Knoten mit Pfeilen */
+/* Die Kette misst ihren eigenen Platz (Container Query), nicht das Fenster: In einer schmalen Karte
+   stapelt sie sich senkrecht, auch wenn der Bildschirm breit ist. */
+.chain-wrap{container-type:inline-size}
 .chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px;margin:12px 0 18px}
 .chain-node{flex:1 1 120px;min-width:0;padding:10px 12px;border:1.5px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--surface);display:grid;gap:2px;align-content:center;text-align:center}
 .chain-node b{font-size:.9375rem}
 .chain-node small{color:var(--muted);font-size:.8125rem;line-height:1.35}
+/* Sicherheitsnetz: lange Bezeichner wie team:sales#lead brechen um, statt aus dem Kasten zu laufen */
+.chain-node b,.chain-node small{overflow-wrap:break-word}
 .chain-node.is-brand{border-color:var(--brand);background:var(--brand-soft)}
 .chain-node.is-warn{border-color:var(--warn);background:var(--warn-bg)}
 .chain-node.is-bad{border-color:var(--danger);background:var(--danger-bg)}
@@ -356,7 +361,7 @@ a.logo:hover{background:var(--surface-2)}
 .chain-arrow{display:grid;place-items:center;color:var(--muted);font-size:.75rem;text-align:center;min-width:28px;flex:0 1 auto}
 .chain-arrow .ic{width:22px;height:22px}
 .chain-arrow span{display:block;max-width:8rem;line-height:1.25}
-@media (max-width:599px){.chain{flex-direction:column}.chain-arrow .ic{transform:rotate(90deg)}}
+@container (max-width:459px){.chain{flex-direction:column}.chain-node{flex-basis:auto}.chain-arrow .ic{transform:rotate(90deg)}}
 /* Sequenzdiagramm */
 .seq{--n:3;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:0 4px;margin:12px 0 18px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);padding:12px 8px;overflow-x:auto;min-width:0}
 .seq-actor{text-align:center;font-weight:700;font-size:.875rem;padding:6px 4px;border-radius:var(--radius-sm);background:var(--surface-2);margin-bottom:8px;overflow-wrap:anywhere}
@@ -380,6 +385,7 @@ a.logo:hover{background:var(--surface-2)}
 .panel{border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--bg);padding:14px;min-width:0}
 .panel h3{margin:0 0 10px}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;align-items:start}
+.two>*{min-width:0}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .row .field{flex:1 1 10rem;min-width:0}
 .field select{width:100%}
@@ -391,6 +397,7 @@ a.logo:hover{background:var(--surface-2)}
 .verdict small{display:block;font-weight:400;color:var(--ink);margin-top:2px}
 .trace{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:.875rem}
 .trace li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px;align-items:start;padding:6px 8px;border-radius:6px;background:var(--surface)}
+.trace li>span{overflow-wrap:anywhere}
 .trace .ic{width:18px;height:18px;margin-top:1px}
 .trace .t-ok .ic{color:var(--success)}
 .trace .t-no .ic{color:var(--danger)}
@@ -430,6 +437,23 @@ textarea.input{min-height:7em;padding:10px 12px;font:400 .8125rem/1.5 var(--font
 .mini-tbl th,.mini-tbl td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
 .mini-tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .mini-tbl .acts{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
+/* Wenig Platz (Handy, schmale Spalte): jede Zeile wird eine kleine Karte, statt seitlich zu scrollen.
+   Sonst lägen Betrag und Aktions-Knöpfe – genau das, worum es geht – außerhalb des Bildes. */
+.mini-body{container:mini / inline-size}
+@container mini (max-width:559px){
+  .mini-tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .mini-tbl,.mini-tbl tbody{display:block}
+  .mini-tbl tr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"id cust amt" "team team status" "acts acts acts";gap:4px 10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
+  .mini-tbl th,.mini-tbl td{display:block;padding:0;border:0}
+  .mini-tbl tr>:nth-child(1){grid-area:id}
+  .mini-tbl tr>:nth-child(2){grid-area:cust;font-weight:700;overflow-wrap:anywhere}
+  .mini-tbl tr>:nth-child(3){grid-area:team;color:var(--muted);font-size:.8125rem}
+  .mini-tbl tr>:nth-child(4){grid-area:amt}
+  .mini-tbl tr>:nth-child(5){grid-area:status;justify-self:end}
+  .mini-tbl tr>:nth-child(6){grid-area:acts}
+  .mini-tbl tr>:nth-child(6):empty,.mini-tbl .acts:empty{display:none}
+  .mini-tbl .acts{justify-content:flex-start}
+}
 .mini .btn{min-height:34px;padding:0 10px;font-size:.8125rem;border-radius:8px}
 .mini .btn[aria-disabled="true"]{opacity:.45}
 .mini-empty{padding:18px;text-align:center;color:var(--muted)}
@@ -700,7 +724,9 @@ function table(head,rows,{cls='',caption=''}={}){
 }
 /* chain(): Knoten mit Pfeilen dazwischen – [Titel, Untertitel, Variante] und optional Pfeil-Beschriftungen */
 function chain(nodes,arrows=[]){
-  return `<div class="chain" role="list">${nodes.map(([t,s,v],i)=>`${i?`<div class="chain-arrow" aria-hidden="true">${ic('arrow')}${arrows[i-1]?`<span>${arrows[i-1]}</span>`:''}</div>`:''}<div class="chain-node${v?' is-'+v:''}" role="listitem"><b>${t}</b>${s?`<small>${s}</small>`:''}</div>`).join('')}</div>`;
+  // Bezeichner wie invoice:R-1002#approver dürfen nach : und # umbrechen statt mitten im Wort
+  const soft=t=>/</.test(t)?t:t.replace(/([:#])(?=\S)/g,'$1<wbr>');
+  return `<div class="chain-wrap"><div class="chain" role="list">${nodes.map(([t,s,v],i)=>`${i?`<div class="chain-arrow" aria-hidden="true">${ic('arrow')}${arrows[i-1]?`<span>${arrows[i-1]}</span>`:''}</div>`:''}<div class="chain-node${v?' is-'+v:''}" role="listitem"><b>${soft(t)}</b>${s?`<small>${s}</small>`:''}</div>`).join('')}</div></div>`;
 }
 /* seq(): Sequenzdiagramm. actors: Namen; steps: [von, nach, Text] (Indizes). Rückantworten gestrichelt. */
 function seq(actors,steps,{id=''}={}){
@@ -963,12 +989,12 @@ LESSONS.push({
   body:tx(`<h3>Warum nicht einfach SHA-256?</h3>
 <p>SHA-256 ist für Geschwindigkeit gebaut. Eine Grafikkarte rechnet Milliarden davon pro Sekunde – ein achtstelliges Passwort ist so in Stunden durchprobiert. Passwort-Hashes sind <i>absichtlich</i> langsam: Ein Login merkt 100 Millisekunden nicht, ein Angreifer mit Milliarden Versuchen sehr wohl.</p>
 <h3>Was NIST heute empfiehlt</h3>
-<ul><li>Mindestens 8 Zeichen, besser 15 – und lange Passphrasen erlauben (mindestens 64 Zeichen).</li><li>Keine Zusammensetzungsregeln („ein Sonderzeichen, eine Ziffer“) und kein regelmäßiger Zwangswechsel.</li><li>Neue Passwörter gegen Listen bekannter, geleakter Passwörter prüfen.</li></ul>
+<ul><li>Mindestens 15 Zeichen, wenn das Passwort allein schützt; 8 genügen nur zusammen mit MFA. Lange Passphrasen erlauben (mindestens 64 Zeichen).</li><li>Keine Zusammensetzungsregeln („ein Sonderzeichen, eine Ziffer“) und kein regelmäßiger Zwangswechsel.</li><li>Neue Passwörter gegen Listen bekannter, geleakter Passwörter prüfen.</li></ul>
 <blockquote><p>In einer Firmen-App mit Keycloak, Entra ID oder Auth0 hashst du selbst gar nichts: Der Identity Provider speichert die Passwörter, deine App sieht nur noch Tokens. Diese Lektion erklärt, was dort passiert – und was du tust, wenn du doch einmal selbst Passwörter speicherst.</p></blockquote>`,
 `<h3>Why not just SHA-256?</h3>
 <p>SHA-256 is built for speed. A graphics card computes billions of them per second – an eight-character password is brute-forced in hours. Password hashes are <i>deliberately</i> slow: a login doesn’t notice 100 milliseconds, an attacker with billions of attempts certainly does.</p>
 <h3>What NIST recommends today</h3>
-<ul><li>At least 8 characters, better 15 – and allow long passphrases (at least 64 characters).</li><li>No composition rules (“one special character, one digit”) and no forced periodic changes.</li><li>Check new passwords against lists of known, leaked passwords.</li></ul>
+<ul><li>At least 15 characters when the password is the only factor; 8 are enough only together with MFA. Allow long passphrases (at least 64 characters).</li><li>No composition rules (“one special character, one digit”) and no forced periodic changes.</li><li>Check new passwords against lists of known, leaked passwords.</li></ul>
 <blockquote><p>In a company app with Keycloak, Entra ID or Auth0 you hash nothing yourself: the identity provider stores the passwords, your app only sees tokens. This lesson explains what happens there – and what you do if you ever store passwords yourself.</p></blockquote>`),
   demoHint:tx('Die Hashes rechnet dein Browser wirklich – mit der Web Crypto API.','Your browser really computes the hashes – with the Web Crypto API.'),
   demo:`<div class="row"><div class="field"><label for="pw-in">${tx('Passwort von Vera und Tom','Password of Vera and Tom')}</label><input class="input" id="pw-in" value="sommer2026" autocomplete="off" spellcheck="false"></div><button type="button" class="btn btn-primary" id="pw-go">${tx('Hashen','Hash')}</button></div>
@@ -1248,10 +1274,12 @@ JwtDecoder jwtDecoder(OAuth2ResourceServerProperties props) {
   NimbusJwtDecoder decoder = JwtDecoders.fromIssuerLocation(props.getJwt().getIssuerUri());
   OAuth2TokenValidator<Jwt> tenant = new JwtClaimValidator<String>(
       "tenant", t -> t != null && !t.isBlank());
+  OAuth2TokenValidator<Jwt> audience = new JwtClaimValidator<List<String>>(
+      JwtClaimNames.AUD, aud -> aud != null && aud.contains("invoice-api"));
   decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(
-      JwtValidators.createDefaultWithIssuer(props.getJwt().getIssuerUri()), tenant));
+      JwtValidators.createDefaultWithIssuer(props.getJwt().getIssuerUri()), audience, tenant));
   return decoder;
-}`}
+}`,note:tx('Achtung: Sobald du einen eigenen <code>JwtDecoder</code> definierst, wertet Spring Boot <code>audiences</code> aus der <code>application.yml</code> nicht mehr aus – die aud-Prüfung musst du dann selbst ergänzen, wie hier.','Careful: as soon as you define your own <code>JwtDecoder</code>, Spring Boot no longer applies <code>audiences</code> from <code>application.yml</code> – you have to add the aud check yourself, as shown here.')}
   ],
   do:tx(['Bibliotheken nehmen (Spring Security, Nimbus) statt selbst zu parsen.','Den erwarteten Algorithmus fest vorgeben.','<code>aud</code> immer prüfen.','Schlüssel rotieren und das JWKS cachen.'],['Use libraries (Spring Security, Nimbus) instead of parsing yourself.','Pin the expected algorithm.','Always check <code>aud</code>.','Rotate keys and cache the JWKS.']),
   dont:tx(['Nur die Signatur prüfen und den Rest weglassen.','Den Schlüssel aus dem Token selbst nehmen (<code>jwk</code>-Header).','Die Uhrentoleranz auf Minuten aufblähen.'],['Only check the signature and skip the rest.','Take the key from the token itself (<code>jwk</code> header).','Inflate the clock tolerance to minutes.']),
@@ -1357,16 +1385,16 @@ ${table(['Method','Phishing','Note'],[
       $('#totp-bar',root).parentElement.style.setProperty('--p','');$('#totp-bar',root).style.width=(left/30*100)+'%';$('#totp-left',root).textContent=tx(`noch ${left} s gültig`,`valid for ${left} s`)};
     const id=setInterval(tick,1000);tick();
     $('#totp-check',root).addEventListener('click',async()=>{const v=$('#totp-in',root).value.trim(),step=Math.floor(Date.now()/30000);
-      const ok=[step,step-1].map(totp);const [a,b]=await Promise.all(ok);
-      $('#totp-res',root).innerHTML=v===a?verdict(true,tx('Code stimmt – zweiter Faktor bestanden.','Code matches – second factor passed.')):v===b?verdict(true,tx('Code der vorigen Periode – mit einem Schritt Toleranz noch akzeptiert.','Code from the previous period – still accepted with one step of tolerance.')):verdict(false,tx('Falscher Code.','Wrong code.'),tx('Server erlauben meist ± eine Periode und sperren nach wenigen Fehlversuchen.','Servers usually allow ± one period and lock after a few failed attempts.'))});
+      const [a,b,c]=await Promise.all([step,step-1,step+1].map(totp));
+      $('#totp-res',root).innerHTML=v===a?verdict(true,tx('Code stimmt – zweiter Faktor bestanden.','Code matches – second factor passed.')):v===b||v===c?verdict(true,tx('Code der Nachbarperiode – mit einem Schritt Toleranz noch akzeptiert.','Code from the neighbouring period – still accepted with one step of tolerance.')):verdict(false,tx('Falscher Code.','Wrong code.'),tx('Server erlauben meist ± eine Periode und sperren nach wenigen Fehlversuchen.','Servers usually allow ± one period and lock after a few failed attempts.'))});
     return ()=>clearInterval(id);
   },
   code:[{t:tx('Spring: Step-up für Zahlungen über den acr-Claim','Spring: step-up for payments via the acr claim'),lang:'java',src:`@PreAuthorize("hasAuthority('invoice:pay') and @mfa.isStrong(authentication)")
 public void pay(String invoiceId) { … }
 
 @Component("mfa")
-class MfaPolicy {
-  boolean isStrong(Authentication auth) {
+public class MfaPolicy {
+  public boolean isStrong(Authentication auth) {
     return auth instanceof JwtAuthenticationToken jwt
         && List.of("mfa", "passkey").contains(jwt.getToken().getClaimAsString("acr"));
   }
@@ -1587,7 +1615,7 @@ LESSONS.push({
   init(root){
     const items=[
       {q:tx('Die Angular-App will „Hallo, Tom“ in der Kopfleiste anzeigen.','The Angular app wants to show “Hello, Tom” in the header.'),opts:['ID Token','Access Token','Refresh Token'],a:0,why:tx('Das ID Token ist genau dafür da: Es sagt dem Client, wer angemeldet ist.','The ID token is made for exactly that: it tells the client who is signed in.')},
-      {q:tx('Die App ruft <code>GET /api/invoices</code> auf.','The app calls <code>GET /api/invoices</code>.'),opts:['ID Token','Access Token','Beide'],a:1,why:tx('Die API bekommt das Access Token. Das ID Token hat die Client-ID als <code>aud</code> – eine API, die es akzeptiert, prüft <code>aud</code> nicht.','The API gets the access token. The ID token has the client ID as <code>aud</code> – an API that accepts it doesn’t check <code>aud</code>.')},
+      {q:tx('Die App ruft <code>GET /api/invoices</code> auf.','The app calls <code>GET /api/invoices</code>.'),opts:['ID Token','Access Token',tx('Beide','Both')],a:1,why:tx('Die API bekommt das Access Token. Das ID Token hat die Client-ID als <code>aud</code> – eine API, die es akzeptiert, prüft <code>aud</code> nicht.','The API gets the access token. The ID token has the client ID as <code>aud</code> – an API that accepts it doesn’t check <code>aud</code>.')},
       {q:tx('Beim Logout soll Keycloak wissen, welche Session beendet wird.','On logout, Keycloak should know which session to end.'),opts:[tx('ID Token als id_token_hint','ID token as id_token_hint'),'Access Token','Refresh Token'],a:0,why:tx('Der RP-initiierte Logout nimmt das ID Token als Hinweis (<code>id_token_hint</code>).','RP-initiated logout takes the ID token as a hint (<code>id_token_hint</code>).')},
       {q:tx('Die App soll Toms Rechte kennen, um Knöpfe auszublenden.','The app should know Tom’s permissions to hide buttons.'),opts:[tx('Rollen aus dem ID Token','Roles from the ID token'),tx('Access Token im Browser dekodieren','Decode the access token in the browser'),tx('Die API fragen (/api/me)','Ask the API (/api/me)')],a:2,why:tx('Das Access Token ist für die API bestimmt und sein Format kann sich ändern. Am robustesten liefert die API selbst die effektiven Rechte – dieselbe Logik, die sie auch durchsetzt.','The access token is meant for the API and its format may change. Most robust: the API itself delivers the effective permissions – the same logic it enforces.')}
     ];
@@ -2085,7 +2113,7 @@ ${table(['','RBAC','ABAC','PBAC','ReBAC'],[
 <div><b>PBAC</b>${chain([['Request'],['PDP','approve.cedar','warn'],['permit','','good']])}</div>
 <div><b>ReBAC</b>${chain([['user:tom'],['team:sales#lead','','brand'],['invoice:R-1002#approver','','good']])}</div>
 </div>`),
-  css:`.mo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:4px 20px}.mo-grid .chain{margin-top:6px}.mo-grid .chain-node{flex-basis:70px}`,
+  css:`.mo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,600px),1fr));gap:4px 24px}.mo-grid .chain{margin-top:6px}`,
   demoTitle:tx('Eine Frage, vier Modelle','One question, four models'),demoHint:tx('„Darf die Person oben diese Rechnung freigeben?“','“May the person at the top approve this invoice?”'),
   demo:`<div class="field" style="max-width:24rem"><label for="mo-inv">${tx('Rechnung','Invoice')}</label><select id="mo-inv">${INVOICES.map(i=>`<option value="${i.id}"${i.id==='R-1003'?' selected':''}>${i.id} · ${TEAMS[i.team]} · ${eur(i.amount)} · ${STATUS[i.status]}</option>`).join('')}</select></div><div id="mo-out"></div>`,
   init(root){
@@ -2331,13 +2359,18 @@ class Invoice {
 }
 
 @Component
-class TokenTenantResolver implements CurrentTenantIdentifierResolver<String> {
+class TokenTenantResolver implements CurrentTenantIdentifierResolver<String>, HibernatePropertiesCustomizer {
   public String resolveCurrentTenantIdentifier() {
     return SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticationToken t
         ? t.getToken().getClaimAsString("org") : "none";
   }
   public boolean validateExistingCurrentSessions() { return true; }
-}`,note:tx('Der Wert <code>"none"</code> trifft keine Zeile – ohne Mandant gibt es keine Daten (fail closed).','The value <code>"none"</code> matches no row – without a tenant there is no data (fail closed).')}
+
+  @Override   // registers the resolver with Hibernate
+  public void customize(Map<String, Object> props) {
+    props.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER, this);
+  }
+}`,note:tx('Der Wert <code>"none"</code> trifft keine Zeile – ohne Mandant gibt es keine Daten (fail closed). Über <code>HibernatePropertiesCustomizer</code> meldet Spring Boot den Resolver bei Hibernate an; eine Bean allein reicht nicht.','The value <code>"none"</code> matches no row – without a tenant there is no data (fail closed). Spring Boot registers the resolver with Hibernate via <code>HibernatePropertiesCustomizer</code>; a bean alone isn’t enough.')}
   ],
   do:tx(['Rollen immer als Mitgliedschaft pro Mandant modellieren.','Den Mandanten serverseitig aus dem geprüften Token ableiten.','Isolation in der Datenschicht erzwingen, nicht nur in jeder Abfrage „dran denken“.'],['Always model roles as membership per tenant.','Derive the tenant server-side from the verified token.','Enforce isolation in the data layer instead of “remembering” it in every query.']),
   dont:tx(['Globale Rollen, die in jedem Mandanten gelten.','Mandant aus einem Header <code>X-Tenant</code> übernehmen, ohne die Mitgliedschaft zu prüfen.','Fremden Mandanten mit 403 antworten – das verrät, dass es die ID gibt.'],['Global roles that apply in every tenant.','Take the tenant from an <code>X-Tenant</code> header without checking membership.','Answer foreign tenants with 403 – that reveals the ID exists.']),
@@ -2394,8 +2427,8 @@ LESSONS.push({
 public void pay(String id, RequestContext ctx) { … }
 
 @Component("invoicePolicy")
-class InvoicePolicy {
-  boolean canPay(UserPrincipal u, String id, RequestContext ctx) {
+public class InvoicePolicy {
+  public boolean canPay(UserPrincipal u, String id, RequestContext ctx) {
     Invoice inv = invoices.get(id);                           // PIP: resource attributes
     LocalTime t = LocalTime.now(clock);
     return u.has("invoice:pay")                               // R1
@@ -2552,10 +2585,12 @@ type invoice
   css:`.rb-tuples{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:3px;max-height:18rem;overflow:auto}.rb-tuples li{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:2px 2px 2px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}.rb-tuples .icon-btn{width:36px;height:36px}.rb-path{margin:6px 0 0;padding-left:1.2em;font-weight:400}`,
   after:tx('<p><b>Probier:</b> Prüfe <code>user:vera</code>, <code>viewer</code>, <code>invoice:R-1004</code> (Buchhaltung) – nein. Füge das Tupel <code>invoice:R-1004#viewer@user:vera</code> hinzu – jetzt ja. So funktioniert „Teilen“ in Google Drive. Und entferne <code>team:sales#lead@user:tom</code>: Tom verliert alle Freigaberechte auf einen Schlag.</p>','<p><b>Try:</b> check <code>user:vera</code>, <code>viewer</code>, <code>invoice:R-1004</code> (finance) – no. Add the tuple <code>invoice:R-1004#viewer@user:vera</code> – now yes. That’s how “sharing” works in Google Drive. And remove <code>team:sales#lead@user:tom</code>: Tom loses all approval rights in one go.</p>'),
   code:[{t:tx('Spring: OpenFGA fragen','Spring: asking OpenFGA'),lang:'java',src:`@Component("fga")
-class FgaPolicy {
+public class FgaPolicy {
   private final OpenFgaClient fga;
 
-  boolean check(String user, String relation, String object) throws Exception {
+  public FgaPolicy(OpenFgaClient fga) { this.fga = fga; }
+
+  public boolean check(String user, String relation, String object) throws Exception {
     var res = fga.check(new ClientCheckRequest()
         .user("user:" + user).relation(relation)._object(object)).get();
     return Boolean.TRUE.equals(res.getAllowed());
@@ -2747,7 +2782,10 @@ export class AuthStore {
   can(p: Permission): boolean { return this.permissions().has(p); }
   canAny(...ps: Permission[]): boolean { return ps.some(p => this.can(p)); }
 
-  login(returnUrl = '/') { this.oidc.authorize(undefined, { customParams: { state: returnUrl } }); }
+  login(returnUrl = '/') {
+    sessionStorage.setItem('returnUrl', returnUrl);   // read again after the callback
+    this.oidc.authorize();                             // state stays the library's random value
+  }
   logout() { this.oidc.logoff().subscribe(); }
   reload() { this.meResource.reload(); }   // e.g. after a role change
 }`,note:tx('Weil <code>can()</code> ein Signal liest, ist jeder Aufruf im Template oder in einem <code>computed</code> automatisch reaktiv. Melde Tom ab und wieder an – alles zeichnet sich neu, ohne dass eine Komponente etwas abonnieren muss.','Because <code>can()</code> reads a signal, every call in a template or a <code>computed</code> is automatically reactive. Sign Tom out and back in – everything re-renders without any component having to subscribe.')},
@@ -3322,7 +3360,8 @@ LESSONS.push({
         { provide: AuthStore, useValue: fakeAuth(perms ?? [], perms !== null) }],
     });
     const route: Route = { path: 'x', data: { permission: needed } };
-    return TestBed.runInInjectionContext(() => requirePermission(route, [new UrlSegment('x', {})]));
+    const current = {} as PartialMatchRouteSnapshot;   // third parameter of CanMatchFn
+    return TestBed.runInInjectionContext(() => requirePermission(route, [new UrlSegment('x', {})], current));
   };
 
   it.each([
@@ -3694,7 +3733,7 @@ class InvoiceController {
   void approve(@PathVariable String id, @AuthenticationPrincipal UserPrincipal me) {
     service.approve(id, me);
   }
-}`,note:tx('<code>UserPrincipal</code> ist ein eigener Typ, den der Converter aus dem JWT baut (id, team, Limit, Permissions) – so steckt in Controllern und Policies kein Token-Format. Prüft die Policy vor dem Laden nicht, ob die Rechnung sichtbar ist, gibt <code>canApprove</code> für fremde IDs <code>false</code> zurück → 403; wer 404 will, wirft im Service eine <code>NotFound</code>-Ausnahme.','<code>UserPrincipal</code> is your own type the converter builds from the JWT (id, team, limit, permissions) – so no token format leaks into controllers and policies. If the policy doesn’t check visibility before loading, <code>canApprove</code> returns <code>false</code> for foreign IDs → 403; if you want 404, throw a <code>NotFound</code> exception in the service.')}
+}`,note:tx('<code>UserPrincipal</code> ist ein eigener Typ, den der Converter aus dem JWT baut (id, team, Limit, Permissions) – so steckt in Controllern und Policies kein Token-Format. Dafür gibt der Converter statt <code>JwtAuthenticationToken</code> (dort ist das <code>Jwt</code> der Principal) eine eigene Unterklasse von <code>AbstractAuthenticationToken</code> zurück, deren <code>getPrincipal()</code> den <code>UserPrincipal</code> liefert. Prüft die Policy vor dem Laden nicht, ob die Rechnung sichtbar ist, gibt <code>canApprove</code> für fremde IDs <code>false</code> zurück → 403; wer 404 will, wirft im Service eine <code>NotFound</code>-Ausnahme.','<code>UserPrincipal</code> is your own type the converter builds from the JWT (id, team, limit, permissions) – so no token format leaks into controllers and policies. For that, instead of a <code>JwtAuthenticationToken</code> (whose principal is the <code>Jwt</code>), the converter returns its own subclass of <code>AbstractAuthenticationToken</code> whose <code>getPrincipal()</code> yields the <code>UserPrincipal</code>. If the policy doesn’t check visibility before loading, <code>canApprove</code> returns <code>false</code> for foreign IDs → 403; if you want 404, throw a <code>NotFound</code> exception in the service.')}
   ],
   do:tx(['Eine Policy-Klasse pro Ressource mit reinen Regel-Methoden.','Gründe zurückgeben (<code>reasonNotTo…</code>), nicht nur <code>boolean</code> – fürs Frontend und fürs Audit.','Lesezugriffe in der Abfrage filtern.'],['One policy class per resource with pure rule methods.','Return reasons (<code>reasonNotTo…</code>), not just a <code>boolean</code> – for the frontend and for audits.','Filter reads in the query.']),
   dont:tx(['Objektprüfungen im Controller als <code>if</code>-Ketten.','Erst laden, dann prüfen, dann trotzdem das Objekt im Fehlertext zurückgeben.'],['Object checks in the controller as <code>if</code> chains.','Load first, check, then return the object in the error message anyway.']),
@@ -3777,7 +3816,9 @@ LESSONS.push({
   },
   code:[{t:'OpaAuthorizationManager.java',lang:'java',src:`@Component
 class OpaInvoiceAuthorization implements AuthorizationManager<MethodInvocation> {
+  private static final Logger log = LoggerFactory.getLogger(OpaInvoiceAuthorization.class);
   private final RestClient opa;
+  private final InvoiceRepository invoices;
 
   OpaInvoiceAuthorization(InvoiceRepository invoices) {
     var factory = new SimpleClientHttpRequestFactory();
@@ -3807,10 +3848,11 @@ class OpaInvoiceAuthorization implements AuthorizationManager<MethodInvocation> 
   record OpaResult(Boolean result) {}
 }
 
-// wire it to an annotation
+// wire it to a custom annotation @OpaChecked (only those methods ask OPA)
 @Bean
-static Advisor approveAuthorization(OpaInvoiceAuthorization opa) {
-  return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(opa);  // or a custom pointcut
+static Advisor opaAuthorization(OpaInvoiceAuthorization opa) {
+  return new AuthorizationManagerBeforeMethodInterceptor(
+      AnnotationMatchingPointcut.forMethodAnnotation(OpaChecked.class), opa);
 }`,note:tx('Der Timeout ist bewusst knapp: Lieber ein seltenes 403 (oder 503) als Anfragen, die bei einem hängenden PDP minutenlang warten. Decision Logs schreibt OPA selbst.','The timeout is deliberately tight: better a rare 403 (or 503) than requests waiting for minutes on a hanging PDP. OPA writes decision logs itself.')}],
   do:tx(['PDP nah am Dienst betreiben (Sidecar) oder einbetten.','Timeout + fail closed + Alarm.','Für Listen Batch-Anfragen oder Filter-Abfragen (<code>listObjects</code>, partielle Auswertung).'],['Run the PDP close to the service (sidecar) or embed it.','Timeout + fail closed + alert.','For lists, batch requests or filter queries (<code>listObjects</code>, partial evaluation).']),
   dont:tx(['Pro Tabellenzeile einen Netzwerkaufruf.','Bei PDP-Ausfall „vorübergehend alles erlauben“.','Entscheidungen ungeprüft lange cachen, wenn sich Rechte schnell ändern.'],['One network call per table row.','“Temporarily allow everything” when the PDP is down.','Cache decisions for long without checks when rights change quickly.']),

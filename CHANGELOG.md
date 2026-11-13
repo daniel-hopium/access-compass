@@ -11,6 +11,16 @@ Kategorien: **Neu** (neue Funktionen), **Verbessert** (bestehendes Verhalten), *
 
 ## Unveröffentlicht
 
+### Behoben
+- Inhalte gegen Doku und Standards geprüft und korrigiert: NIST-Passwortlänge (15 Zeichen
+  ohne MFA), fehlende `aud`-Prüfung bei eigenem `JwtDecoder`, Login-Beispiel überschrieb
+  `state` (CSRF-Schutz), Policy-Beans für SpEL jetzt `public`, Hibernate-Mandanten-Resolver
+  wird angemeldet, Guard-Test mit drittem `CanMatchFn`-Parameter, OPA-Beispiel kompiliert und
+  hängt nur an `@OpaChecked`, TOTP-Toleranz in beide Richtungen.
+- Text läuft nicht mehr aus Karten: Die Ketten in „Zugriffsmodelle im Überblick“ stapeln sich
+  in schmalen Karten senkrecht, lange Bezeichner brechen nach `:` und `#` um. Die
+  Rechnungs-App zeigt auf dem Handy Karten statt einer seitlich scrollenden Tabelle.
+
 ### Neu
 - Hell/Dunkel-Umschalter im Kopf: Klick legt das Design fest und merkt es sich, ohne Klick
   gilt weiter die Systemeinstellung.
